@@ -39,14 +39,14 @@ def before_run(user, server):
     # print("测试4", s)
     os.system(s)
     # 创建数据目录
-    s = "ssh " + user + "@" + server + " \"sudo mkdir ~/code/datas\""
+    # s = "ssh " + user + "@" + server + " \"sudo mkdir ~/code/datas\""
     # print("测试4", s)
-    os.system(s)
+    # os.system(s)
     # 更改目录权限
     s = "ssh root@" + server +  " -p 2222 \"chown -R 1000:1000 /home/code/output\""
     os.system(s)
-    s = "ssh root@" + server +  " -p 2222 \"chown -R 1000:1000 /home/code/datas\""
-    os.system(s)
+    # s = "ssh root@" + server +  " -p 2222 \"chown -R 1000:1000 /home/code/datas\""
+    # os.system(s)
     # 将本地目录所有文件上传至容器
     s = "scp ./* " + user + "@" + server + ":~/code"
     # print("测试3", s)
@@ -75,6 +75,10 @@ def after_run(user, server):
     # s = "scp -r " + user +"@" + server + ":~/code/datas/* ./datas/"
     # print("测试5", s)
     # os.system(s)
+    # 清理输出目录中的内容
+    s = "ssh root@" + server +  " -p 2222 \"rm -rf /home/code/output/*\""
+    print("删除服务器输出目录中的内容……")
+    os.system(s)
 
 
 # 上传代码至服务器并运行
@@ -93,6 +97,7 @@ def run(gpus, user, server):
         print("正在运行代码……\n")
         os.system(s)
         after_run(user, server)
+        print("运行结束")
     elif gpus == "copy":
         if sys.argv[2] == "up":
             before_run(user, server)
